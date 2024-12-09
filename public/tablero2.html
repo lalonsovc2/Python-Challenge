@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles/tienda.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@700&display=swap" rel="stylesheet">
+    <title>Tablero de Juego</title>
+    <link rel="stylesheet" href="styles/tablero.css">
+    
+</head>
+<body>
+    <div class="navbar" id="navbar"></div>
+
+    <div id="board" class="board"></div>
+
+
+    <!-- Botón para abrir el Modal -->
+    <button id="openModalBtn"></button>
+
+
+    <!-- Botón para abrir el modal -->
+    <button id="openModalEfi"  onclick="showEficienciasModal()"></button>
+
+
+    <!-- Botón para tirar dados -->
+    <button id="tirarDado" onclick="checkUnresolvedEvent()"></button>
+    <p id="diceResult"></p>
+
+
+
+    <!-- Contenedor principal que contiene las categorías, items y detalles -->
+    <div id="main-container">
+        
+        <div class="left-div">
+            <!-- Botón de cerrar modal -->
+            <button id="closeModalBtn"><img src="/images/regresar.png" alt=""></button>
+
+            <!-- Panel izquierdo con las categorías -->
+            <div class="categories">
+                <button data-category="productos" onclick="showCategory('productos'); setActive(this)"></button>
+                <button onclick="showCategory('proyectos'); setActive(this)"></button>
+                <button onclick="showCategory('recursos'); setActive(this)"></button>
+            </div>
+        </div>
+        
+
+        <!-- Panel central con los items de cada categoría -->
+        
+        
+        <div class="items-wrapper">
+            <div id="items-container" class="items"></div>
+        </div>
+        
+
+        <!-- Panel derecho con los detalles del item seleccionado -->
+        <div id="selected-item" class="selected-item">
+            <p style="color: #7D88DB;">Necesita</p>
+            <div id="item-requirements" class="requirements"></div>
+            <p id="item-name"></p>
+            <p id="item-cost"></p>
+            <button id="buyButton" class="buy-button" style="display:none;" onclick="buyItem()"></button>
+            <p class="budget" id="budgetAvailable"></p> <!-- Presupuesto disponible -->
+        </div>
+    </div>
+
+
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal()"></div>
+<div class="modal" id="eventModal">
+    <!-- Vista inicial: Descripción -->
+    <div id="eventDescriptionView">
+        <h2>Evento</h2>
+        <p id="eventDescription"></p>
+        <button class="continue-button" onclick="showEventDetails()">Continuar</button>
+    </div>
+
+    <!-- Vista secundaria: Detalles -->
+    <div id="eventDetailsView" style="display: none;">
+        <h2>Evento</h2>
+
+        <div class="event-header">
+            <div class="event-level">
+                <span>Nivel</span>
+                <div class="level-badge">
+                    <span id="eventLevel"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="event-content">
+            <div class="efficiencies">
+                <h3>Eficiencias</h3>
+                <ul id="eventEfficiencies"></ul>
+            </div>
+
+            <div class="modifiers">
+                <h3>Modificadores</h3>
+                <div class="modifiers-category">
+                    <h4>Productos</h4>
+                    <div id="modifiersProducts" class="modifiers-list"></div>
+                </div>
+                <div class="modifiers-category">
+                    <h4>Proyectos</h4>
+                    <div id="modifiersProjects" class="modifiers-list"></div>
+                </div>
+                <div class="modifiers-category">
+                    <h4>Recursos</h4>
+                    <div id="modifiersResources" class="modifiers-list"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="event-results">
+            <h3>Resultados</h3>
+            <div class="results-success">
+                <h4>Si tienes éxito</h4>
+                <div id="eventSuccessResult"></div>
+            </div>
+            <div class="results-failure">
+                <h4>Si fracasas</h4>
+                <div id="eventFailureResult"></div>
+            </div>
+        </div>
+
+        <button class="roll-dice-button" onclick="">Tirar Dados</button>
+
+
+
+    </div>
+</div>
+
+<div id="resultModal" class="modal" style="display: none;">
+    <h2 id="resultTitle"></h2>
+    <p id="resultMessage"></p>
+    <button onclick="closeResultModal()">Cerrar</button>
+</div>
+
+
+
+
+<!-- Modal -->
+<div id="eficienciasModal" class="modal-efi">
+    <div class="modal-content">
+      <span class="close" onclick="closeEficienciasModal()">&times;</span>
+      <div class="eficiencias-container">
+        <!-- Lista de eficiencias -->
+        <div class="eficiencias-list">
+          <h2>Mis Eficiencias</h2>
+          <ul id="eficienciasList">
+            <!-- Las eficiencias se generarán dinámicamente -->
+          </ul>
+        </div>
+        <!-- Detalles de eficiencia seleccionada -->
+        <div class="eficiencia-detail">
+            <h2 id="eficienciaTitle">Eficiencia</h2>
+            <img id="eficienciaImage" src="/images/eficiencia.png" alt="Imagen de Eficiencia" />
+            <p id="eficienciaValue">0/36</p>
+            <p id="eficienciaDescription">Selecciona una eficiencia para ver más detalles.</p>
+            <div id="eficienciaProducts">
+              
+              <ul id="productList">
+                <!-- Los productos se generarán dinámicamente -->
+              </ul>
+            </div>
+          </div>
+          
+      </div>
+    </div>
+  </div>
+  
+
+  <div id="playersContainer" class="players-container">
+    <!-- Aquí se agregarán dinámicamente las imágenes de los jugadores -->
+</div>
+
+
+
+    <script>
+let currentEvent = null;
+const playerId = 1732507611; // ID único del jugador activo
+
+
+efficiencies = [
+    {
+        "ID": 1,
+        "name": "Sistema de Governance",
+        "modifiable_by_products": [5, 6, 7, 8, 28],
+        "modifiable_by_projects": [2],
+        "modifiable_by_resources": [],
+   
+    },
+    {
+        "ID": 2,
+        "name": "Conocimiento del negocio y de sus desafíos",
+        "modifiable_by_products": [1],
+        "modifiable_by_projects": [8],
+        "modifiable_by_resources": [],
+ 
+    },
+    {
+        "ID": 3,
+        "name": "Conocimiento de la Organización",
+        "modifiable_by_products": [3, 9, 11],
+        "modifiable_by_projects": [2],
+        "modifiable_by_resources": [],
+   
+    },
+    {
+        "ID": 4,
+        "name": "Conocimiento estratégico de la solución",
+        "modifiable_by_products": [2, 3],
+        "modifiable_by_projects": [1],
+        "modifiable_by_resources": [],
+
+    },
+    {
+        "ID": 5,
+        "name": "Conocimiento funcional y tecnológico en la solución",
+        "modifiable_by_products": [4, 10, 15, 16, 18, 27, 36],
+        "modifiable_by_projects": [3],
+        "modifiable_by_resources": [],
+   
+    },
+    {
+        "ID": 6,
+        "name": "Solvencia operacional autónoma",
+        "modifiable_by_products": [11, 17, 42],
+        "modifiable_by_projects": [4],
+        "modifiable_by_resources": [],
+
+    },
+    {
+        "ID": 7,
+        "name": "Capacidad para gestionar los cambios",
+        "modifiable_by_products": [12, 21, 22, 23, 24, 26, 33, 34, 41, 43, 45],
+        "modifiable_by_projects": [2, 7],
+        "modifiable_by_resources": [2, 5],
+
+    },
+    {
+        "ID": 8,
+        "name": "Capacidad para manejar la PMO",
+        "modifiable_by_products": [13, 14, 19, 20, 25, 30],
+        "modifiable_by_projects": [1],
+        "modifiable_by_resources": [1],
+  
+    },
+    {
+        "ID": 9,
+        "name": "Capacidad para operar la solución",
+        "modifiable_by_products": [29, 35, 37, 38, 39, 40],
+        "modifiable_by_projects": [1],
+        "modifiable_by_resources": [4, 6],
+
+    },
+    {
+        "ID": 10,
+        "name": "Capacidad para extender la solución a la operación",
+        "modifiable_by_products": [42, 44],
+        "modifiable_by_projects": [3, 6],
+        "modifiable_by_resources": [],
+
+    },
+    {
+        "ID": 11,
+        "name": "Capacidad para replicar la solución",
+        "modifiable_by_products": [31, 32, 46],
+        "modifiable_by_projects": [5],
+        "modifiable_by_resources": [3],
+
+    },
+    {
+        "ID": 12,
+        "name": "Capacidad para resolver problemas",
+        "modifiable_by_products": [7, 8, 9, 28],
+        "modifiable_by_projects": [2],
+        "modifiable_by_resources": [1],
+
+    }
+]
+
+
+
+
+    const events = [
+        {
+            ID: 1,
+            nivel: "1",
+            description: "El director de TI ha solicitado al área de Recursos Humanos que le facilite algunos colaboradores que conozcan bien los procesos involucrados y que puedan destinar algunas horas a la semana a liderar funcionalmente el proceso mientras dure el proyecto, asegurándose -al mismo tiempo- que la operación no decaiga en sus gestiones y metas.",
+            required_efficiencies: [5, 6, 9],
+            result_success: { points: 100, money: 1000 },
+            result_failure: { points: -50, money: -500 }
+        },
+        {
+            ID: 2,
+            nivel: "1",
+            description: "Al momento de aterrizar el contrato con el proveedor seleccionado en la Carta Gantt del proyecto, el director de TI ha descubierto que el proveedor considera solo consultores técnicamente habilitados para manejar las actividades que implica la implantación de la herramienta, encontrando que la experiencia en la comprensión y manejo de los procesos académicos y financieros están supeditados a que la Universidad adopte al 100% los estándares base-line de la solución.",
+            required_efficiencies: [9, 12, 4],
+            result_success: { points: 200, money: 2000 },
+            result_failure: { points: -100, money: -1000 }
+        },
+        {
+            ID: 3,
+            nivel: "1",
+            description: "Al momento de comunicar formalmente a la organización, empiezan a circular por los pasillos de la Universidad dudas, temores e interpretaciones diversas respecto al objetivo del proyecto, su alcance y consecuencias en la realidad del trabajo diario de docentes y administrativos, a la vez que los más antiguos manifiestan preocupación por el cambio y los más nuevos recuerdan experiencias frustrantes en anteriores trabajos que vivieron un proceso similar.",
+            required_efficiencies: [7, 1, 3],
+            result_success: { points: 100, money: 1000 },
+            result_failure: { points: -50, money: -500 }
+        },
+        {
+            ID: 4,
+            nivel: "2",
+            description: "Al integrar el equipo de trabajo asignado al proyecto empiezan a aparecer dificultades en la relación de trabajo entre personas que provienen de diversas áreas internas, así como con los consultores externos, derivados de la asimetría de conocimientos que traen y de las personalidades y comportamientos de cada integrante. El concepto de equipo de trabajo único está siendo puesto en entredicho.",
+            required_efficiencies: [8, 5, 7],
+            result_success: { points: 200, money: 2000 },
+            result_failure: { points: -100, money: -1000 }
+        },
+        {
+            ID: 5,
+            nivel: "2",
+            description: "Al momento de realizar los primeros análisis de brechas entre los procesos de la Universidad y la funcionalidad contratada, se empieza a constatar que resultará complicado seguir el lineamiento de apego a la base-line de la solución, así como realizar las adaptaciones necesarias y excepcionales que requieren ciertos procesos específicos de la Universidad. El equipo empieza a dudar si la solución elegida es la mejor.",
+            required_efficiencies: [9, 5, 7],
+            result_success: { points: 100, money: 1000 },
+            result_failure: { points: -50, money: -500 }
+        },
+        {
+            ID: 6,
+            nivel: "2",
+            description: "Al activar una encuesta sobre la marcha del proyecto entre las personas asignadas por la Universidad para representarla en sus análisis de brechas entre el proceso y la herramienta, se detecta que un número importante de ellos no entiende cómo funciona la lógica del sistema y los expertos técnicos utilizan un lenguaje complejo que no logran entender. Se percibe fractura en el equipo de trabajo.",
+            required_efficiencies: [8, 9, 7],
+            result_success: { points: 100, money: 1000 },
+            result_failure: { points: -50, money: -500 }
+        },
+        {
+            ID: 7,
+            nivel: "3",
+            description: "Durante la fase de definiciones críticas respecto a cómo deben operar los procesos con la solución elegida, comienzan a emerger conflictos internos que manifiestan el funcionamiento por silos que -históricamente- ha permeado la cultura organizacional de la Universidad. El PM levanta este tema y debe ser analizado y resuelto por las instancias superiores del gobierno del proyecto.",
+            required_efficiencies: [3, 1, 7],
+            result_success: { points: 200, money: 2000 },
+            result_failure: { points: -100, money: -1000 }
+        },
+        {
+            ID: 8,
+            nivel: "3",
+            description: "El líder de la PMO es una persona con gran experiencia en tecnologías de información, reconocido por sus pares como una persona capaz de encontrar soluciones técnicas a los diversos requerimientos de las áreas usuarias de la Universidad, aunque la velocidad de respuesta y la complejidad de los análisis a menudo hacen que el problema persista y presente errores posteriores. No logra ejercer un liderazgo en el negocio.",
+            required_efficiencies: [2, 3, 5],
+            result_success: { points: 200, money: 2000 },
+            result_failure: { points: -100, money: -1000 }
+        },
+        {
+            ID: 9,
+            nivel: "3",
+            description: "Al terminar la primera etapa del proyecto, la PMO advierte que la carta Gantt se está desfasando de forma importante dado que las personas responsables del governance no están tomando las decisiones críticas que se requieren antes de avanzar en las fases siguientes de configuración, migración de datos y otras. El margen de maniobra se está reduciendo y usted debe tomar cartas en el asunto.",
+            required_efficiencies: [8, 5, 1],
+            result_success: { points: 300, money: 3000 },
+            result_failure: { points: -200, money: -2000 }
+        },
+        {
+            ID: 10,
+            nivel: "4",
+            description: "Al comenzar el proceso de toma de ramos, iniciando el semestre académico, el Vicerrector Académico advierte fallas, retrasos y reprocesos que perjudican al estudiante estresando -simultáneamente- a los administrativos a cargo y escalando decisiones que antes se resolvían más cerca del origen. Al averiguar las causas, estas se asocian mayoritariamente con la desatención que el líder funcional está prestando al proceso operativo por estar atendiendo el proyecto tecnológico.",
+            required_efficiencies: [6, 8, 10],
+            result_success: { points: 300, money: 3000 },
+            result_failure: { points: -200, money: -2000 }
+        },
+        {
+            ID: 11,
+            nivel: "4",
+            description: "Durante la fase de configuración de aquellas funcionalidades que no quedaron embebidas en la solución nativa, una de las personas asignadas por el consultor renuncia al proyecto y su sustitución amenaza con retrasar de forma significativa la marcha del cronograma. Usted debe proponer alguna solución mientras aparece el reemplazante.",
+            required_efficiencies: [5, 8, 12],
+            result_success: { points: 300, money: 3000 },
+            result_failure: { points: -200, money: -2000 }
+        },
+        {
+            ID: 12,
+            nivel: "4",
+            description: "Durante la fase de configuración de aquellas funcionalidades que no quedaron embebidas en la solución nativa, las personas asignadas por la Universidad quedan como simples observadores ya que no entienden cómo funciona el sistema y temen que, al terminar esta fase, el proceso no haya quedado correctamente expresado en la herramienta y que ya no exista tiempo para corregir esas anomalías.",
+            required_efficiencies: [8, 7, 5],
+            result_success: { points: 200, money: 2000 },
+            result_failure: { points: -100, money: -1000 }
+        },
+        {
+            ID: 13,
+            nivel: "5",
+            description: "Al revisar la evolución de la Carta Gantt por parte del Comité Directivo, una vez transcurrido el segundo hito de definición de procesos y su aplicación en la solución, se informa que existe un desfase importante respecto de la programación base aprobada, lo que enciende las alertas en el Comité y llaman al director de la PMO a explicar las causas y proponer un plan remedial que no afecte el resultado final del proyecto, en todas sus variables originales.",
+            required_efficiencies: [1, 8, 7],
+            result_success: { points: 300, money: 3000 },
+            result_failure: { points: -200, money: -2000 }
+        },
+        {
+            ID: 14,
+            nivel: "5",
+            description: "Habiendo transcurrido más de la mitad del proyecto y estando en plena fase de migración de datos, el director de Recursos Humanos advierte al PM que cinco personas asignadas al proyecto han manifestado su intención de retirarse de la Universidad ya que están sobrecargados de trabajo y no ven que esto se vaya a resolver en el corto ni mediano plazo. El director no sabe cómo plantear opciones atractivas y concretas de retención.",
+            required_efficiencies: [7, 3, 1],
+            result_success: { points: 200, money: 2000 },
+            result_failure: { points: -100, money: -1000 }
+        },
+        {
+            ID: 15,
+            nivel: "5",
+            description: "Un grupo significativo de docentes, encabezados por varios Decanos y Directores Académicos ha hecho llegar una carta a la Vicerrectoría Académica manifestando su descontento con algunas decisiones que se han adoptado y que -de acuerdo con sus percepciones- perjudican gravemente el desarrollo del curriculum académico ofrecido. La causa, en su entendimiento, es que la solución obliga a hacer cosas que en esa Universidad no aplicarían. La Vicerrectoría académica debe enfrentar este asunto con celeridad.",
+            required_efficiencies: [1, 3, 2],
+            result_success: { points: 200, money: 2000 },
+            result_failure: { points: -100, money: -1000 }
+        },
+        {
+            ID: 16,
+            nivel: "6",
+            description: "Durante la fase de migración de datos se evidencia que la Universidad no cuenta con toda la información actualizada que permita traer la historia a la nueva herramienta y surge la tentación de disponer de dos bases de datos, alojadas en sistemas diversos, para no atrasar la salida en vivo del proyecto. El Vicerrector de servicios a Alumni levanta este problema ya que repercutirá de manera importante en los exalumnos que egresaron antes de la fecha de quiebre en dos bases de datos. El Comité del proyecto debe decidir en un plazo breve.",
+            required_efficiencies: [4, 12, 1],
+            result_success: { points: 300, money: 3000 },
+            result_failure: { points: -200, money: -2000 }
+        },
+        {
+            ID: 17,
+            nivel: "6",
+            description: "En la definición general del proyecto, se decidió realizar un piloto o prototipo con las unidades funcionales más representativas para, luego, extender la solución hacia las demás unidades. La universidad está pronto a salir en productivo con el piloto pero no está seguro de tener las capacidades para llevar a cabo los roll outs en el tiempo requerido por la institución. Usted debe dar una opinión fundamentada al respecto.",
+            required_efficiencies: [11, 7, 1],
+            result_success: { points: 300, money: 3000 },
+            result_failure: { points: -200, money: -2000 }
+        },
+        {
+            ID: 18,
+            nivel: "6",
+            description: "La universidad ha completado las pruebas integrales del sistema y todo opera de acuerdo a las definiciones realizadas en la fase de planeación. Es el momento de extender la herramienta a la operación concreta de modo que, a partir del siguiente periodo académico, todas las actividades se desarrollen en la plataforma nueva. Usted debe asegurar que esto ocurra sin errores ni retrasos.",
+            required_efficiencies: [10, 7, 1],
+            result_success: { points: 400, money: 4000 },
+            result_failure: { points: -300, money: -3000 }
+        },
+        {
+            ID: 19,
+            nivel: "6",
+            description: "Al comenzar el nuevo periodo académico, las personas que estuvieron asignadas al proyecto regresan a sus funciones operacionales habituales, por lo que las personas que los reemplazaron temporalmente deben ser separadas de la organización, así como algunas otras personas cuyas tareas quedaron absorbidas por el sistema. Usted debe llevar a cabo esta tarea.",
+            required_efficiencies: [3, 9, 12],
+            result_success: { points: 400, money: 4000 },
+            result_failure: { points: -300, money: -3000 }
+        },
+        {
+            ID: 20,
+            nivel: "6",
+            description: "Viendo el éxito que tuvo la implementación de la solución, el grupo controlador de la Universidad decide replicar esta experiencia en otras instituciones académicas, para lo cual le solicita a las personas más expertas en el proyecto para que refuercen la iniciativa. Usted debe apoyar esta solicitud.",
+            required_efficiencies: [6, 10, 5],
+            result_success: { points: 400, money: 4000 },
+            result_failure: { points: -300, money: -3000 }
+        }
+    ];
+
+    function getRandomEventByLevel(level) {
+        const filteredEvents = events.filter(event => event.nivel === String(level));
+        return filteredEvents[Math.floor(Math.random() * filteredEvents.length)];
+    }
+
+    const eventLevels = [
+        { months: [0, 1], level: 1 }, // Enero y Febrero
+        { months: [2, 3], level: 2 }, // Marzo y Abril
+        { months: [4, 5], level: 3 }, // Mayo y Junio
+        { months: [6, 7], level: 4 }, // Julio y Agosto
+        { months: [8, 9], level: 5 }, // Septiembre y Octubre
+        { months: [10, 11], level: 6 } // Noviembre y Diciembre
+    ];
+
+        
+        const months = [
+            "Ene", "Feb", "Mar", "Abr", "May", "Jun", 
+            "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"
+        ];
+        let currentMonthIndex = 0;
+        let currentPhase = 1;
+        let tokenPosition = 1; // La ficha comienza en la casilla 1
+        let moving = false;
+
+        function renderNavbar() {
+            const navbar = document.getElementById("navbar");
+            navbar.innerHTML = ""; // Limpiar la barra de navegación
+
+            months.forEach((month, index) => {
+                navbar.innerHTML += `
+                    <a onclick="selectMonth(${index})" style="${index === currentMonthIndex ? 'font-weight: bold;' : 'background-color: #6676D1'}">
+                        ${month}
+                    </a>`;
+            });
+        }
+
+
+
+        const eventDays = Array.from({ length: 30 }, (_, i) => i + 1).filter(day => {
+        // Excluir sábados y domingos
+        const date = new Date(2024, currentMonthIndex, day); // Ajustar el año según sea necesario
+        const dayOfWeek = date.getDay();
+        return dayOfWeek !== 0 && dayOfWeek !== 6; // 0: Domingo, 6: Sábado
+    });
+
+    function getEventLevelForMonth(monthIndex) {
+        const levelConfig = eventLevels.find(config => config.months.includes(monthIndex));
+        return levelConfig ? levelConfig.level : null;
+    }
+
+        
+    function renderBoard() {
+        const board = document.getElementById("board");
+        board.innerHTML = "";
+        const isJanuary = currentMonthIndex === 0;
+
+        const positions = [
+            { row: 3, col: 2 }, { row: 3, col: 3 }, { row: 3, col: 4 }, { row: 3, col: 5 }, { row: 2, col: 5 },
+            { row: 1, col: 5 }, { row: 1, col: 6 }, { row: 1, col: 7 }, { row: 1, col: 8 }, { row: 1, col: 9 },
+            { row: 2, col: 9 }, { row: 3, col: 9 }, { row: 3, col: 10 }, { row: 3, col: 11 }, { row: 3, col: 12 }
+        ];
+
+        const startDay = currentPhase === 1 ? 1 : 16;
+        const endDay = currentPhase === 1 ? 15 : 30;
+
+        if (isJanuary && currentPhase === 1) {
+            board.innerHTML += `<div class="cell start" style="grid-row: 3; grid-column: 1;">0</div>`;
+        } else {
+            board.innerHTML += `<div class="cell arrow" style="grid-row: 3; grid-column: 1;" onclick="changePhase(-1)">&#8592;</div>`;
+        }
+
+        const currentLevel = getEventLevelForMonth(currentMonthIndex);
+
+        for (let i = startDay; i <= endDay; i++) {
+            const posIndex = i - startDay;
+            const pos = positions[posIndex];
+            const isEventDay = eventDays.includes(i);
+
+            const showBubble = i === tokenPosition && isEventDay && currentEvent;
+
+            board.innerHTML += `
+                <div class="cell" id="cell-${i}" style="grid-row: ${pos.row}; grid-column: ${pos.col};">
+                    ${i}
+                    ${isEventDay ? `<div class="event"> ${currentLevel}</div>` : ''}
+                    ${i === tokenPosition ? `
+                        <div class="token" id="token">
+                            ${showBubble ? `<div class="bubble" onclick="showEventModal()">Evento</div>` : ''}
+                        </div>
+                    ` : ''}
+                </div>`;
+        }
+
+        board.innerHTML += `<div class="cell arrow" style="grid-row: 3; grid-column: 13;" onclick="changePhase(1)">&#8594;</div>`;
+    }
+
+        function rollDice() {
+            if (moving) return; // Evitar múltiples movimientos simultáneos
+            const diceRoll = Math.floor(Math.random() * 6) + 1; // Generar número aleatorio entre 1 y 6
+            document.getElementById("diceResult").innerText = `Dado: ${diceRoll}`;
+            moveToken(diceRoll);
+        }
+
+        function moveToken(steps) {
+        moving = true;
+        let currentStep = 0;
+
+        const interval = setInterval(() => {
+            if (currentStep < steps) {
+                const totalCells = currentPhase === 1 ? 15 : 30;
+
+                if (tokenPosition < totalCells) {
+                    tokenPosition++;
+                    renderBoard();
+                    currentStep++;
+                } else {
+                    clearInterval(interval);
+                    moving = false;
+                    currentStep++;
+                    if (currentPhase === 1) {
+                        currentPhase = 2;
+                        tokenPosition = 16;
+                    } else {
+                        currentPhase = 1;
+                        currentMonthIndex = (currentMonthIndex + 1) % 12;
+                        tokenPosition = 1;
+                    }
+                    renderNavbar();
+                    renderBoard();
+                    if (currentStep < steps) moveToken(steps - currentStep);
+                }
+            } else {
+                clearInterval(interval);
+                moving = false;
+
+                // Verificar si la casilla final tiene un evento
+                if (eventDays.includes(tokenPosition)) {
+                    currentEvent = getRandomEventByLevel(getEventLevelForMonth(currentMonthIndex));
+                    renderBoard(); // Actualizar la burbuja
+                }
+            }
+        }, 500);
+    }
+
+    const baseImagePath = "/images";
+    function getEfficiencyNames(ids) {
+        // Convertir IDs de eficiencias en nombres
+        return ids
+            .map(id => efficiencies.find(eff => eff.ID === id)?.name || `ID: ${id}`)
+            .join(", ");
+    }
+
+    function getModifierDetails(efficiencyIds) {
+        // Combinar modificadores de todas las eficiencias requeridas
+        const relevantEfficiencies = efficiencies.filter(eff => efficiencyIds.includes(eff.ID));
+        const products = [...new Set(relevantEfficiencies.flatMap(eff => eff.modifiable_by_products))];
+        const projects = [...new Set(relevantEfficiencies.flatMap(eff => eff.modifiable_by_projects))];
+        const resources = [...new Set(relevantEfficiencies.flatMap(eff => eff.modifiable_by_resources))];
+
+        return {
+            products: products.length ? products.join(", ") : "Ninguno",
+            projects: projects.length ? projects.join(", ") : "Ninguno",
+            resources: resources.length ? resources.join(", ") : "Ninguno",
+        };
+    }
+
+    function getModifierImages(efficiencyIds) {
+        // Combina todos los modificadores de las eficiencias requeridas
+        const relevantEfficiencies = efficiencies.filter(eff => efficiencyIds.includes(eff.ID));
+
+        // Combina productos, proyectos y recursos únicos
+        const products = [...new Set(relevantEfficiencies.flatMap(eff => eff.modifiable_by_products))];
+        const projects = [...new Set(relevantEfficiencies.flatMap(eff => eff.modifiable_by_projects))];
+        const resources = [...new Set(relevantEfficiencies.flatMap(eff => eff.modifiable_by_resources))];
+
+        // Generar imágenes con nombres
+        const renderImages = (ids, category) =>
+            ids.map(id => {
+                const imagePath = `${baseImagePath}/${category.charAt(0).toUpperCase() + category.slice(1)}/${category}_${id}.png`;
+                return `<div class="modifier">
+                    <img src="${imagePath}" alt="${category} ${id}" title="${category} ${id}" />
+                    <p>${category} ${id}</p>
+                </div>`;
+            }).join("");
+
+        return {
+            products: renderImages(products, "productos"),
+            projects: renderImages(projects, "proyectos"),
+            resources: renderImages(resources, "recursos"),
+        };
+    }
+
+    function showEventModal() {
+    if (currentEvent) {
+        // Mostrar datos iniciales del modal
+        document.getElementById("eventDescription").innerText = currentEvent.description;
+        document.getElementById("eventDescriptionView").style.display = "block";
+        document.getElementById("eventDetailsView").style.display = "none";
+
+        // Configurar el botón de "Tirar Dados" con los valores actuales
+        const rollDiceButton = document.querySelector(".roll-dice-button");
+        rollDiceButton.setAttribute("onclick", `rollEventDice(${currentEvent.ID}, ${playerId}, ${currentEvent.nivel})`);
+
+        // Mostrar modal y overlay
+        document.getElementById("modalOverlay").style.display = "block";
+        document.getElementById("eventModal").style.display = "block";
+    }
+}
+
+// Función para mostrar los detalles con animación
+function showEventDetails() {
+    const descriptionView = document.getElementById("eventDescriptionView");
+    const detailsView = document.getElementById("eventDetailsView");
+
+    // Agregar animación de salida para la descripción
+    descriptionView.classList.add("slide-out");
+
+    // Después de la animación, mostrar los detalles
+    setTimeout(() => {
+        descriptionView.style.display = "none";
+        descriptionView.classList.remove("slide-out");
+
+        // Configurar los detalles del evento
+        document.getElementById("eventLevel").innerText = currentEvent.nivel;
+        document.getElementById("eventEfficiencies").innerHTML = getEfficiencyNames(currentEvent.required_efficiencies)
+            .split(", ")
+            .map(name => `<li><img src="/images/eficiencia.png" alt="${name}"><span>${name}</span></li>`)
+            .join("");
+
+        const modifiers = getModifierImages(currentEvent.required_efficiencies);
+        document.getElementById("modifiersProducts").innerHTML = modifiers.products || "Ninguno";
+        document.getElementById("modifiersProjects").innerHTML = modifiers.projects || "Ninguno";
+        document.getElementById("modifiersResources").innerHTML = modifiers.resources || "Ninguno";
+
+        document.getElementById("eventSuccessResult").innerText = `+${currentEvent.result_success.points} puntos, +$${currentEvent.result_success.money}`;
+        document.getElementById("eventFailureResult").innerText = `${currentEvent.result_failure.points} puntos, $${currentEvent.result_failure.money}`;
+
+        // Mostrar los detalles con animación de entrada
+        detailsView.style.display = "block";
+        detailsView.classList.add("slide-in");
+
+        // Quitar la clase después de la animación
+        setTimeout(() => {
+            detailsView.classList.remove("slide-in");
+        }, 500);
+    }, 500); // Tiempo sincronizado con la duración de la animación
+}
+
+    function closeModal() {
+        document.getElementById("modalOverlay").style.display = "none";
+        document.getElementById("eventModal").style.display = "none";
+    }
+
+        function selectMonth(index) {
+            currentMonthIndex = index;
+            currentPhase = 1;
+            tokenPosition = 1;
+            renderNavbar();
+            renderBoard();
+        }
+
+        function changePhase(direction) {
+            currentPhase += direction;
+
+            if (currentPhase > 2) {
+                currentPhase = 1;
+                changeMonth(1);
+            } else if (currentPhase < 1) {
+                currentPhase = 2;
+                changeMonth(-1);
+            } else {
+                tokenPosition = 1; // Reiniciar posición en la nueva fase
+                renderBoard();
+            }
+        }
+
+        renderNavbar();
+        renderBoard();
+
+
+
+
+    function rollEventDice(eventId, playerId, level) {
+    const diceRolls = Array.from({ length: level }, () => Math.floor(Math.random() * 6) + 1);
+
+    fetch('/resolve_event', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            player_id: playerId,
+            event: currentEvent, // Envía el evento completo
+            dice_rolls: diceRolls
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showResultModal(true, data);
+        } else {
+            showResultModal(false, data);
+        }
+        markEventAsResolved(currentEvent.ID); // Marca el evento como resuelto
+    })
+    .catch(error => console.error("Error:", error));
+}
+
+
+
+
+
+function penalizeUnresolvedEvent(playerId) {
+    if (!currentEvent) {
+        console.error("No hay evento pendiente para penalizar.");
+        return;
+    }
+
+    fetch('/penalize_event', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            player_id: playerId,
+            event: currentEvent // Envía el evento completo
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        showResultModal(false, data); // Mostrar modal de penalización
+
+        // Marca el evento como resuelto
+        if (currentEvent && currentEvent.ID) {
+            markEventAsResolved(currentEvent.ID);
+        } else {
+            console.error("No se puede marcar el evento como resuelto, currentEvent es nulo.");
+        }
+    })
+    .catch(error => console.error("Error al penalizar el evento:", error));
+}
+
+
+
+
+
+
+function checkUnresolvedEvent() {
+    if (currentEvent) {
+        // Penaliza al jugador automáticamente si hay un evento pendiente
+        penalizeUnresolvedEvent(playerId);
+
+        // Cierra el modal del evento pendiente (si está abierto)
+        const eventModal = document.getElementById("eventModal");
+        if (eventModal && eventModal.style.display === "block") {
+            eventModal.style.display = "none";
+        }
+    } else {
+        // Si no hay evento pendiente, avanza en el tablero
+        rollDice();
+    }
+}
+
+
+
+const resolvedEvents = new Set();
+function markEventAsResolved(eventId) {
+    if (!eventId) {
+        console.error("No se puede marcar como resuelto, eventId es inválido.");
+        return;
+    }
+
+    resolvedEvents.add(eventId);
+
+    // Desactiva la casilla asociada al evento
+    const eventElement = document.querySelector(`[data-event-id="${eventId}"]`);
+    if (eventElement) {
+        eventElement.classList.add("resolved");
+        eventElement.onclick = null; // Desactiva clics en la casilla
+    }
+
+    // Limpia el evento actual
+    currentEvent = null;
+}
+
+
+
+
+function showResultModal(success, data) {
+    const modal = document.getElementById("resultModal");
+    const title = document.getElementById("resultTitle");
+    const message = document.getElementById("resultMessage");
+
+    if (success) {
+        title.innerText = "¡Éxito!";
+        message.innerHTML = `
+            Ganaste: $${data.gains.money} y ${data.gains.points} puntos.<br>
+            Eficiencia usada: ${data.efficiency.name} (${data.efficiency.value} puntos).
+        `;
+    } else {
+        title.innerText = "Derrota";
+        message.innerHTML = `
+            Perdiste: $${data.losses.money} y ${data.losses.points} puntos.
+        `;
+    }
+
+    modal.style.display = "block";
+}
+
+function closeResultModal() {
+    const resultModal = document.getElementById("resultModal");
+    const eventModal = document.getElementById("eventModal");
+
+    // Cierra ambos modales
+    resultModal.style.display = "none";
+    eventModal.style.display = "none";
+
+    // Limpia el estado actual del evento
+    currentEvent = null;
+    closeModal();
+}
+
+
+
+function activateEvent(eventId) {
+    if (resolvedEvents.has(eventId)) {
+        alert("Este evento ya fue resuelto.");
+        return;
+    }
+
+    currentEvent = events.find(event => event.ID === eventId);
+    if (currentEvent) {
+        showEventModal(); // Muestra el modal del evento
+    } else {
+        console.error("Evento no encontrado");
+    }
+}
+
+
+
+async function fetchEficiencias() {
+  const email = "lux5416@hotmail.com"; // Cambiar por el email dinámico del usuario actual
+
+  const response = await fetch("/get-eficiencias", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email }),
+  });
+
+  if (!response.ok) {
+    console.error("Error al obtener eficiencias");
+    return {};
+  }
+
+  return await response.json();
+}
+
+
+async function showEficienciasModal() {
+  const modal = document.getElementById("eficienciasModal");
+  modal.style.display = "block";
+
+  const eficiencias = await fetchEficiencias(); // Obtener eficiencias desde el backend
+  loadEficiencias(eficiencias); // Cargar eficiencias en el modal
+}
+
+function closeEficienciasModal() {
+  const modal = document.getElementById("eficienciasModal");
+  modal.style.display = "none";
+}
+function loadEficiencias(eficiencias) {
+  const eficienciasList = document.getElementById("eficienciasList");
+  eficienciasList.innerHTML = ""; // Limpiar la lista antes de rellenarla
+
+  const maxValues = 36; // Máximo de puntos para todas las eficiencias
+
+  for (const [name, value] of Object.entries(eficiencias)) {
+    const li = document.createElement("li");
+
+    // Crear cuadritos para la barra de progreso
+    const progressBar = document.createElement("div");
+    progressBar.classList.add("progress-bar-container");
+
+    for (let i = 1; i <= maxValues; i++) {
+      const square = document.createElement("div");
+      square.classList.add("progress-bar-square");
+      if (i <= value) {
+        square.classList.add("filled"); // Colorea los cuadritos llenos
+      }
+      progressBar.appendChild(square);
+    }
+
+    li.innerHTML = `
+      <div>${name}</div>
+    `;
+    li.appendChild(progressBar);
+    li.onclick = () => showEficienciaDetail(name, value, maxValues);
+    eficienciasList.appendChild(li);
+  }
+}
+
+
+function showEficienciaDetail(name, value, maxValue) {
+  // Mostrar título, valor, descripción e imagen de la eficiencia
+  document.getElementById("eficienciaTitle").innerText = name;
+  document.getElementById("eficienciaValue").innerText = `${value}/${maxValue}`;
+  document.getElementById("eficienciaDescription").innerText = `Descripción para la eficiencia ${name}`;
+  document.getElementById("eficienciaImage").src = "/images/eficiencia.png"; // Imagen fija para todas las eficiencias
+
+  // Obtener los productos usando la lógica existente
+  const relevantEfficiency = efficiencies.find(eff => eff.name === name);
+  if (!relevantEfficiency) {
+    console.error(`Eficiencia no encontrada: ${name}`);
+    return;
+  }
+
+  const { products } = getModifierImages([relevantEfficiency.ID]); // Obtener solo productos
+
+  // Renderizar los productos en la sección de detalles
+  const productList = document.getElementById("productList");
+  productList.innerHTML = `
+
+    ${products || "<p>No hay productos relacionados.</p>"}
+  `;
+}
+
+const socket = io('http://localhost:3000'); // Asegúrate de usar el mismo puerto y host
+
+// Escucha el evento para actualizar los jugadores
+socket.on('updatePlayers', (players) => {
+    updatePlayers(players);
+});
+
+function updatePlayers(players) {
+    const playersContainer = document.getElementById('playersContainer');
+    playersContainer.innerHTML = ''; // Limpia los jugadores anteriores
+
+    players.forEach(player => {
+        const playerDiv = document.createElement('div');
+        playerDiv.classList.add('player-avatar');
+
+        // Usar lógica consistente con "unirse a una sala"
+        const avatarImg = document.createElement('img');
+        avatarImg.src = player.personaje 
+            ? `/images/personaje${player.personaje}.png` 
+            : '/images/default.png'; // Imagen por defecto
+        avatarImg.alt = player.username || 'Jugador';
+
+        const playerName = document.createElement('span');
+        playerName.textContent = player.username || 'Anónimo';
+
+        playerDiv.appendChild(avatarImg);
+        playerDiv.appendChild(playerName);
+        playersContainer.appendChild(playerDiv);
+    });
+}
+
+
+
+
+    </script>
+    <script src="/scripts/tienda.js"></script>
+    <script src="http://localhost:35730/livereload.js"></script>
+</body>
+</html>

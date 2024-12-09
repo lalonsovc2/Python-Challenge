@@ -1,0 +1,46 @@
+1;Problemas de negocio que se pretende resolver;2000;;;;
+2;Alcance de la solución tecnológica;1000;1;;;
+3;Definición de expectativas de apego baseline;500;1;2;;
+4;Análisis de interfases con otras aplicaciones;500;2;3;;
+5;Presupuesto aprobado;500;2;3;4;
+6;Diseño de los Indicadores de resultados;500;1;2;;
+7;Elección de patrocinadores;1000;1;2;6;
+8;Elaboración del sistema de Gobernanza del proyecto;1000;1;;;
+9;Estudio de Cultura organizacional;1000;8;;;
+10;Análisis de capacidades de proveedores;500;3;6;;
+11;Selección del Personal interno;1500;8;9;;
+12;Levantamiento de la Matriz de riesgos periódica;1500;3;8;9;11
+13;Asignación del Project Manager;1000;8;11;;
+14;Elaboración de la Carta Gantt;1000;10;13;;
+15;Asignación del personal interno funcional;500;2;11;14;
+16;Asignación del personal interno de TI;500;2;11;14;
+17;Aseguramiento de la continuidad operacional;1000;14;11;8;
+18;Determinación de Roles y responsabilidades;1000;14;8;15;16
+19;Definición de los Sistemas de trabajo;500;8;14;13;9
+20;Diseño de los Indicadores de gestión;500;14;12;5;
+21;Aprobación de Sistemas de incentivos;500;8;9;15;16
+22;Definición de políticas de seguridad laboral;500;8;9;15;16
+23;Realización del kick off;500;8;14;18;19
+24;Plan de Comunicación inicial;500;9;23;;
+25;Integración del Equipo ampliado;500;10;15;16;13
+26;Determinación de Planes de mitigación periódicos;1000;12;14;;
+27;Talleres para determinar Gaps de configuración;2000;2;3;14;
+28;Validación de las funcionalidades off baseline;1000;26;8;;
+29;Configuración del sistema;1000;2;28;;
+30;Diseño de los Sistemas de reportes;500;8;14;20;
+31;Diseño de la Capacitación técnica;500;10;15;14;
+32;Diseño de la Capacitación funcional;500;10;16;14;
+33;Talleres de Coaching para resolver conflictos;500;26;9;10;
+34;Análisis de alineación organizacional;500;27;9;;
+35;Requerimientos de información para migración;500;2;;;
+36;Recopilación de Información histórica consistente;500;35;;;
+37;Elaboración de las interfases con aplicaciones;1000;2;4;14;
+38;Migración de datos al sistema;500;35;14;;
+39;Realización de pruebas unitarias;500;14;29;35;
+40;Realización de pruebas integrales;1000;39;;;
+41;Estrategia de capacitación a usuarios finales;500;39;31;;
+42;Capacitación a usuarios finales;2000;41;;;
+43;Realización del Go Live;500;14;;;
+44;Aseguramiento de la operación con nuevo software;500;43;;;
+45;Modificación de las estructuras de organización;500;43;;;
+46;Elaboración de lecciones aprendidas;500;43;44;;

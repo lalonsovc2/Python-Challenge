@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro</title>
+    <link rel="stylesheet" href="/styles/login-register.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&family=Quicksand:wght@500&display=swap" rel="stylesheet">
+</head>
+<body class="fondo">
+    <div class="container2">
+        <a href="/login.html"><button type="button" id="closeLoginModal" class="crr2"><img src="/images_login_sesion/salida.png" alt="" class="salibot2"></button></a> 
+        <img src="/images_login_sesion/logo_2.png" alt="" class="log">
+        <h2 class="tlt">Registrarse</h2>
+        <form id="registerForm">
+            <input type="email" id="registerEmail" class="email" placeholder="Correo electrónico" required>
+            <input type="password" id="registerPassword" class="password" placeholder="Contraseña" required>
+            <input type="password" id="registerConfirmPassword" class="confpassword" placeholder="Repetir contraseña" required>
+            <div>
+                <input type="checkbox" class="mark" id="terms" required>
+                <label for="terms" class="termino">He leído y aceptado Terminos de servicio y Política de <br> privavidad</label>
+            </div>
+            <button type="submit" class="registra"><img src="/public/images/" alt="" > Resgitrar</button>
+        </form>
+    </div>
+    <script>
+        document.getElementById("registerForm").addEventListener("submit", (e) => {
+            e.preventDefault();
+    
+            const email = document.getElementById("registerEmail").value;
+            const password = document.getElementById("registerPassword").value;
+            const confirmPassword = document.getElementById("registerConfirmPassword").value;
+    
+            if (password !== confirmPassword) {
+                alert("Las contraseñas no coinciden.");
+                return;
+            }
+    
+            // Enviar datos al servidor para guardarlos en un archivo JSON
+            fetch('http://localhost:3000/saveData', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email,
+                    password
+                })
+            })
+            .then(response => response.text())
+            .then(data => {
+                alert(data);
+                window.location.href = '/login.html';
+            })
+            .catch(error => alert('Error al guardar los datos: ' + error));
+        });
+    </script>
+   
+    
+</body>
+</html>

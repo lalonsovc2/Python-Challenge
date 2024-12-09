@@ -1,0 +1,28 @@
+html, body {
+    height: 100%; /* Asegúrate de que el documento ocupe toda la altura */
+    margin: 0;
+    background-color: #EEF3FF; /* Fondo general */
+}
+
+.icono-regresar {
+    position: absolute;
+    margin-top: 76px;
+    margin-left: 114px;
+}
+
+
+.podio {
+    position: absolute;
+    left: 129px;
+    bottom: 0;
+}
+
+.contenedor-personajes {
+    width: 643px;
+    height: 536px;
+    background-color: #DBDEF2;
+    position: absolute;
+    right: 218px;
+    top: 252px;
+    border-radius: 20px;
+}

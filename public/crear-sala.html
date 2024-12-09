@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Room</title>
+    <link rel="stylesheet" href="/styles/crear-sala.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&family=Quicksand:wght@500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="container">
+        <!-- Botones de creación y unión de salas -->
+        <div class="room-controls" id="roomControls">
+            <a href="/dashboard.html"><button type="button" id="closeLoginModal" class="crr"><img src="/imagenes-crear-sala/flecha.png" alt="" class="salibot"></button></a> 
+            <a href=""><button type="button" id="closeLoginModal" class="crr1"><img src="/imagenes-crear-sala/volumen.png" alt="" class="salibot1"></button></a> 
+            <h1 class="tl1">Empieza a jugar</h1>
+            <p class="txt1">Invita a tus amigos o reúnete con ellos para vivir esta competencia.</p>
+            <button id="createRoom" class="crear"><img src="/imagenes-crear-sala/crear_sala.png" alt="" class="crear-boton"></button>
+            <button id="joinRoom" class="unir"><img src="/imagenes-crear-sala/unirte.png" alt="" class="unir-boton"></button>
+        </div>
+
+        <!-- Información de la Sala -->
+        <div id="roomInfo">
+            <p class="room-info-id">Sala:  <span id="currentRoomId"> - </span></p>
+            <p class="salas">Sala de: <p class="salas1">lalonsovc</p></p>
+            <div class="menu" id="menu">
+                
+                <div class="profile" id="roomUsers">
+                    <img  src="/imagenes-crear-sala/agregar.png" alt="Disponible">
+                    <p></p>
+                </div>
+                <div class="profile " id="roomUsers">
+                    <img src="/imagenes-crear-sala/agregar.png" alt="Disponible">
+                    <p>Disponible</p>
+                </div>
+                <div class="profile " id="roomUsers">
+                    <img src="/imagenes-crear-sala/agregar.png" alt="Disponible">
+                    <p>Disponible</p>
+                </div>
+                <div class="profile " id="roomUsers">
+                    <img src="/imagenes-crear-sala/agregar.png" alt="Disponible">
+                    <p>Disponible</p>
+                </div>
+            </div>
+            <p class="room-info-user"><img src="/imagenes-crear-sala/persona.png" alt="" class="persona"> <div class="count"><span id="userCount" >0</span>/4</p></div>
+                <div class="room-users" id="roomUsers"></div>
+            <button id="closeRoom" class="salir"><img src="/images_login_sesion/salida.png" alt="" class="sal"></button>
+            <button id="startGame" class="play"><img src="/imagenes-crear-sala/jugar.png" alt="" class="plays"> </button>
+    </div>
+
+    <!-- Modal para ingresar la ID de la sala -->
+    <div id="joinRoomModal" class="modal">
+        <div class="modal-content">            
+            <a href=""><button id="cancelJoinRoom" class="crr2"><img src="/images_login_sesion/salida.png" alt="" class="salibot2"></button></a> 
+            <h2 class="tl2">Unete a una sala</h2>            
+            <p class="txt2">¡Introduce el codigo de la sala para empezar a jugar!</p>
+            <input id="roomIdInput" type="text" class="id" placeholder="Escribe tu Código aquí..." />
+            <img src="/imagenes-crear-sala/gato.png" alt="" class="gato">
+            <button id="confirmJoinRoom" class="entra"><img src="/imagenes-crear-sala/ingresar.png" alt="" class="ingresa"></button>
+        </div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
+    <script>
+        const socket = io('http://localhost:3000'); // Ajusta según el puerto
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (!user) window.location.href = '/login.html';
+
+        const roomUsersDiv = document.getElementById('roomUsers');
+        const roomIdInput = document.getElementById('roomIdInput');
+        const currentRoomId = document.getElementById('currentRoomId');
+        const userCount = document.getElementById('userCount');
+        const closeRoomButton = document.getElementById('closeRoom');
+        const startGameButton = document.getElementById('startGame');
+        const roomControls = document.getElementById('roomControls');
+        const roomInfo = document.getElementById('roomInfo');
+
+        // Modal de unirse a la sala
+        const joinRoomModal = document.getElementById('joinRoomModal');
+        const confirmJoinRoomButton = document.getElementById('confirmJoinRoom');
+        const cancelJoinRoomButton = document.getElementById('cancelJoinRoom');
+
+        // Crear sala
+        document.getElementById('createRoom').addEventListener('click', () => {
+            socket.emit('createRoom', { user });
+        });
+
+        // Mostrar modal para unirse a la sala
+        document.getElementById('joinRoom').addEventListener('click', () => {
+            joinRoomModal.style.display = 'flex';
+        });
+
+        // Unirse a la sala desde el modal
+        confirmJoinRoomButton.addEventListener('click', () => {
+            const roomId = roomIdInput.value.trim();
+            if (roomId) {
+                socket.emit('joinRoom', { roomId, user });
+                joinRoomModal.style.display = 'none';  // Cerrar modal después de unirse
+            }
+        });
+
+        // Cancelar el modal
+        cancelJoinRoomButton.addEventListener('click', () => {
+            joinRoomModal.style.display = 'none';
+        });
+
+        // Cerrar sala
+        closeRoomButton.addEventListener('click', () => {
+            const roomId = currentRoomId.textContent;
+            if (roomId !== '-') socket.emit('closeRoom', roomId);
+        });
+
+        // Iniciar juego
+        startGameButton.addEventListener('click', () => {
+            const roomId = currentRoomId.textContent;
+            if (roomId !== '-') socket.emit('startGame', roomId);
+        });
+
+        // Actualizar información de la sala
+        socket.on('roomUpdate', (room) => {
+            currentRoomId.textContent = room.id;
+            userCount.textContent = room.users.length;
+            roomUsersDiv.innerHTML = room.users.map(u =>
+                `<div class="user-slot">
+                    <img src="${u.user.personaje ? '/images/personaje' + u.user.personaje + '.png' : '/images/default.png'}" alt="${u.user.username}">
+                    <p>${u.user.username}</p>
+                </div>`).join('');
+
+            // Mostrar la información de la sala
+            roomControls.style.display = 'none';
+            roomInfo.style.display = 'block';
+
+            // Mostrar botones solo si el usuario es el creador
+            if (room.creatorId === socket.id) {
+                closeRoomButton.style.display = 'inline-block';
+                startGameButton.style.display = 'inline-block';
+            } else {
+                closeRoomButton.style.display = 'none';
+                startGameButton.style.display = 'none';
+            }
+        });
+
+        // Notificar cierre de sala
+        socket.on('roomClosed', () => {
+            alert('La sala ha sido cerrada.');
+            currentRoomId.textContent = '-';
+            userCount.textContent = '0';
+            roomUsersDiv.innerHTML = '';
+            roomControls.style.display = 'block';
+            roomInfo.style.display = 'none';
+        });
+    </script>
+</body>
+</html>

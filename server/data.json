@@ -1,0 +1,37 @@
+[
+    {
+        "email": "lux5416@hotmail.com",
+        "password": "1",
+        "id": 1732507611,
+        "username": "lalonsovc",
+        "personaje": 4,
+        "budget": 32500,
+        "points": 3100,
+        "productos_comprados": [
+            "1",
+            "2",
+            "3"
+        ],
+        "eficiencias": {
+            "Sistema de Governance": 0,
+            "Conocimiento del negocio y de sus desafíos": 6,
+            "Conocimiento de la Organización": 6,
+            "Conocimiento estratégico de la solución": 12,
+            "Conocimiento funcional y tecnológico en la solución": 0,
+            "Solvencia operacional autónoma": 0,
+            "Capacidad para gestionar los cambios": 0,
+            "Capacidad para manejar la PMO": 0,
+            "Capacidad para operar la solución": 0,
+            "Capacidad para extender la solución a la operación": 0,
+            "Capacidad para replicar la solución": 0,
+            "Capacidad para resolver problemas": 0
+        }
+    },
+    {
+        "email": "1@hotmail.com",
+        "password": "1",
+        "id": 1733500811,
+        "username": "Camilito",
+        "personaje": 4
+    }
+]

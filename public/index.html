@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Challenge</title>
+    <style>
+        body {
+            background-size: cover; /* Asegura que la imagen de fondo cubra toda la pantalla */
+            background-position: center;
+            margin: 0; /* Elimina márgenes por defecto */
+            height: 100vh;
+            display: flex; /* Facilita el centrado de elementos */
+            justify-content: center;
+            align-items: center;
+            background-color: #EEF3FF;
+            position: relative; /* Necesario para posicionar elementos hijos */
+        }
+
+        .gif {
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        img {
+            max-width: 90%; /* Limita el tamaño de la imagen al 90% del ancho del viewport */
+            height: auto; /* Mantiene la proporción de la imagen */
+        }
+
+        .line {
+            width: 80%; /* Hace que la línea sea proporcional al ancho del viewport */
+            max-width: 1400px; /* Limita el tamaño máximo de la línea */
+            height: 20px; /* Ajusta la altura de la línea */
+            border-radius: 25px;
+            background: #7D88DB;
+            position: absolute;
+            bottom: 440px; /* Ajusta su posición para que esté debajo del GIF */
+        }
+
+        /* Media queries para pantallas pequeñas */
+        @media (max-width: 768px) {
+            .line {
+                height: 15px; /* Reduce la altura de la línea */
+                bottom: -30px; /* Ajusta la posición */
+            }
+
+            img {
+                max-width: 100%; /* Asegura que la imagen ocupe todo el ancho disponible */
+            }
+        }
+
+        /* Media queries para pantallas muy pequeñas */
+        @media (max-width: 480px) {
+            .line {
+                height: 10px; /* Reduce más la altura de la línea */
+                bottom: -20px; /* Ajusta más la posición */
+            }
+
+            .gif {
+                padding: 5px; /* Reduce el padding en pantallas pequeñas */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="gif">
+        <img src="/images/gif-inicio.gif" alt="GIF">s
+        <div class="line"></div>
+        
+    </div>
+    <audio id="miAudio">
+        <source src="/images/intro1.wav" type="audio/mpeg">
+       
+    </audio>
+    
+    <script>
+         window.onload = () => {
+        const audio = document.getElementById('miAudio');
+        audio.play().catch(error => console.log('Autoplay bloqueado:', error));
+    };
+        // Redirigir después de 5 segundos
+        setTimeout(() => {
+            window.location.href = "/login.html"; 
+        }, 2800); // Tiempo en milisegundos 
+    </script>
+</body>
+</html>

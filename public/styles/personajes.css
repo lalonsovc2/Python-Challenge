@@ -1,0 +1,243 @@
+body {
+    margin: 0; /* Elimina márgenes por defecto */
+    padding: 0; /* Elimina el relleno por defecto */
+    height: 100vh; /* Altura igual al 100% de la pantalla visible */
+    display: flex; /* Asegura que el contenido se alinee correctamente */
+    flex-direction: column;
+    justify-content: flex-start; /* Opcional, ajusta según el diseño */
+
+    background-image: url("/images/bg-personaje.png");
+    background-size: cover; /* Escala el fondo para cubrir toda la pantalla */
+}
+
+
+.wrapper {
+    min-height: 100%; /* Hace que el contenido principal llene al menos la pantalla */
+    display: flex;
+    flex-direction: column;
+}
+  
+.content {
+    flex: 1; /* Hace que el contenido principal ocupe todo el espacio disponible */
+}
+  
+.footer-space {
+    width: 100%;
+    height: 153.27px;
+    background-color: #49519E;
+    margin: 0;
+    padding: 0;
+}
+
+
+  
+.reloj {
+    position: absolute;
+    bottom: 676px; /* Posiciona 76px por encima de "escritorio" */
+    left: 25%; /* Centra la imagen horizontalmente con respecto a "escritorio" */
+    transform: translateX(-50%); /* Ajusta para centrarla */
+    z-index: 3; /* Asegura que "reloj" esté por encima de "escritorio" y "persona" */
+}
+
+.mueble {
+    position: absolute;
+    left: 134px;
+    bottom: 150px;
+}
+
+.button-3d {
+    width: 384px ;
+    height: 86.45px;
+    margin-bottom: 33px;
+    background-image: url("/images/BOTON.png") ;
+    color: white;
+    font-size: 32px;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+       /* Segunda sombra intermedia con el color ABB6F4 */
+    transition: all 0.2s ease;
+    font-family: "Quicksand", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: normal;
+}
+
+.button-3d:active {
+    background-image: url("/images/BOTON-1.png");     /* Reduce la sombra intermedia cuando se presiona */
+    transform: translateY(4px); /* Desplaza el botón hacia abajo */
+}
+
+.guardar-button {
+    position: absolute;
+    right: 93px;
+    bottom: 88px;
+}
+
+.icono-regresar {
+    position: absolute;
+    margin-top: 76px;
+    margin-left: 114px;
+}
+
+h1 {
+    position: absolute;
+    right: 33%;
+    top: 12%;
+    font-size: 40px;
+    font-family: "Quicksand", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 900;
+    font-style: normal;
+    color: #5661B4;
+}
+
+.contenedor-personajes {
+    width: 643px;
+    height: 536px;
+    background-color: #DBDEF2;
+    position: absolute;
+    right: 218px;
+    top: 252px;
+    border-radius: 20px;
+}
+
+
+#characterList {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Tres columnas de igual ancho */
+    gap: 20px; /* Espacio entre las casillas de personajes */
+    padding: 20px; /* Espacio interno opcional alrededor del contenido */
+}
+
+.character-item {
+    position: relative;
+    display: inline-block;
+    margin: 10px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.character-icon {
+    width: 150px;
+    height: 150px;
+    transition: transform 0.6s ease, box-shadow 0.6s ease; /* Animación suave */
+
+}
+
+.character-item p {
+    margin: 5px 0 0;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 16px;
+    color: #7C7C7C;
+}
+
+.character-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(208, 213, 255, 0.5);
+    border-radius: 10px;
+    transition: opacity 0.3s ease;
+}
+
+.character-item.bloqueado .character-icon {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.character-item.bloqueado::before {
+    opacity: 1;
+    background-color: rgba(208, 213, 255, 0.5);/* Color para mostrar que está bloqueado */
+}
+
+.character-item.selected::before {
+    opacity: 0;
+}
+
+.character-item:hover::before {
+    opacity: 0.2;
+}
+
+
+/* Contenedor del personaje seleccionado */
+#characterInfo {
+    position: relative;
+    overflow: hidden;
+    width: 480px; /* Ajustar al diseño */
+    height: 900px; /* Ajustar al diseño */
+    left: 550px;
+    top: 100px;
+    color: white;
+}
+
+/* Imagen del personaje seleccionado */
+#selectedCharacterImage {
+    position: absolute;
+    width: 100%;
+    height: auto;
+    transition: transform 0.6s ease-in-out; /* Animación suave */
+
+}
+
+
+/* Animaciones para deslizamiento */
+.slide-right {
+    transform: translateX(100%);
+
+}
+.slide-left {
+    transform: translateX(-100%);
+
+}
+
+
+/* Personaje bloqueado (visualización) */
+.character-item.bloqueado {
+    pointer-events: none; /* Deshabilita interacción */
+    opacity: 0.5; /* Indica visualmente que está bloqueado */
+    filter: grayscale(100%);
+}
+
+
+
+.character-item {
+    display: inline-block;
+    text-align: center;
+    width: 154.01px ;
+    height: 177.98px;
+    border: 2px solid #DBDEF2;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+   
+    color: #7C7C7C;
+    font-family: "Quicksand", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: normal;
+}
+
+.character-item img{
+    width: 154.01px ;
+    height: 177.98px;
+}
+
+
+.character-item:hover {
+    background-color: rgb(149, 161, 255);
+    z-index: 1px;
+}
+
+.character-item.bloqueado {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.character-item.selected {
+    border-color: #49519E;
+    background-color: #ABB6F4;
+}

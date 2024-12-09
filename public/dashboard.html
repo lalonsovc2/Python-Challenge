@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu</title>
+    <link rel="stylesheet" href="/styles/menu.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="icon-bar-container">
+        <div class="icon-with-bar">
+            <img src="/images/nivel.png" alt="Icono Lvl" class="niveles" id="medalla">
+            <div class="bar-text">Lvl 2</div>
+        </div>
+        <div class="icon-with-bar">
+            <img src="/images/copa.png" alt="Icono Número" class="niveles">
+            <div class="bar-text">2</div>
+        </div>
+    </div>
+    <div class="icons-container">
+        <img src="/images/mensajes.png" alt="Mensajes" class="icon">
+        <img src="/images/solicitud.png" alt="Solicitud" class="icon">
+        <img src="/images/volumen.png" alt="volumen" class="icon">
+        <button class="botones" onclick="cerrarSesion()"><img src="/images/salir.png" alt="Salir" class="icon"></button>
+    </div>
+    <div class="background-container">
+        <div class="reloj-div">
+            <img src="/images/reloj.png" alt="Reloj" class="reloj">
+        </div>
+        <div class="persona-div">
+            <img id="selectedCharacterImage"  alt="Persona" class="persona">
+        </div>
+        <div class="estante-div">
+            <img src="/images/estante.png" alt="Estante" class="estante">
+        </div>
+        <div class="escritorio-div">
+            <img src="/images/escritorio.png" alt="Escritorio" class="escritorio">
+        </div>
+    </div>
+    <div class="buttons-container">
+        <a href="/character-selection.html"><button class="button-3d">Personajes</button></a>
+        <a href="/ranking.html"><button class="button-3d">Ranking</button></a>
+        <button class="button-3d">Amigos</button>
+    </div>
+    <div class="jugar-button">
+        <button class="button-3d" onclick="startGame()">¡Jugar!</button>
+    </div>
+    <div class="wrapper">
+        <div class="content">
+        </div>
+        <div class="footer-space"></div>
+    </div>
+
+    <script src="/scripts/dashboard.js"></script>
+</body>
+</html>

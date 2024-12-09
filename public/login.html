@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio</title>
+    <link rel="stylesheet" href="/styles/login-register.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&family=Quicksand:wght@500&display=swap" rel="stylesheet">
+    <style>
+        
+    </style>
+</head>
+<body>
+
+    
+    <div class="container">
+        <button id="loginBtn" class="sesion"><img src="/images_login_sesion/sesion.png" alt="img_sesison"></button>
+        <a href="register.html"><button class="register"><img src="/images_login_sesion/registrar.png" alt="img_register"></button></a>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal hidden">
+        <div class="modal-content">
+            <button type="button" id="closeLoginModal" class="crr"><img src="/images_login_sesion/salida.png" alt="" class="salibot"></button>
+            <img src="/images_login_sesion/logo_2.png" alt="mjs" class="mjs">
+            <form id="loginForm">
+                <input type="email" id="loginEmail"  class="correo" placeholder="Correo electrónico" required>
+                <input type="password" id="loginPassword" class="contra" placeholder="Contraseña" required>
+                <p class="boton-texto">¿Olvidaste tu contraseña?</p>
+                <button type="submit" class="ing"><img src="/images_login_sesion/ingresar.png" alt="" class="ingre"></button>
+                <p class="boton-cuenta">¿No tienes cuenta?</p>
+                <a href="/register.html"><p class="boton-registrar">Registrate aquí</p></a>
+            </form>
+        </div>
+    </div>
+
+    <!-- Username Modal -->
+    <div id="usernameModal" class="modal hidden">
+        <div class="modal-content1"> 
+            <button type="button" id="closeUsernameModal" class="crr3"><img src="/images_login_sesion/salida.png" alt="" class="salibot3"></button>
+            <img src="/images_login_sesion/logo_2.png" alt="">
+            <h2 class="p1">¡Esribe tu nombre!</h2>
+            <h2 class="p2">Escribe algo corto y memorable</h2>
+            <form id="usernameForm">
+                <input type="text" id="username" class="name" placeholder="Tu nombre..." required>
+                <button type="submit" class="cont"><img src="/images_login_sesion/continuar.png" alt="" class="continuar"></button>
+            </form>
+        </div>
+    </div>
+
+    <script src="scripts/login-register.js"></script>
+</body>
+</html>

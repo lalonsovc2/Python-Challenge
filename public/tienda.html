@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda</title>
+    <link rel="stylesheet" href="/styles/tienda.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Botón para abrir el Modal -->
+    <button id="openModalBtn">Abrir Modal</button>
+
+    <!-- Contenedor principal que contiene las categorías, items y detalles -->
+    <div id="main-container">
+        
+        <div class="left-div">
+            <!-- Botón de cerrar modal -->
+            <button id="closeModalBtn"><img src="/images/regresar.png" alt=""></button>
+
+            <!-- Panel izquierdo con las categorías -->
+            <div class="categories">
+                <button data-category="productos" onclick="showCategory('productos'); setActive(this)"></button>
+                <button onclick="showCategory('proyectos'); setActive(this)"></button>
+                <button onclick="showCategory('recursos'); setActive(this)"></button>
+            </div>
+        </div>
+        
+
+        <!-- Panel central con los items de cada categoría -->
+        
+        
+        <div class="items-wrapper">
+            <div id="items-container" class="items"></div>
+        </div>
+        
+
+        <!-- Panel derecho con los detalles del item seleccionado -->
+        <div id="selected-item" class="selected-item">
+            <p style="color: #7D88DB;">Necesita</p>
+            <div id="item-requirements" class="requirements"></div>
+            <p id="item-name"></p>
+            <p id="item-cost"></p>
+            <button id="buyButton" class="buy-button" style="display:none;" onclick="buyItem()"></button>
+            <p class="budget" id="budgetAvailable"></p> <!-- Presupuesto disponible -->
+        </div>
+    </div>
+
+    <script src="/scripts/tienda.js"></script>
+    <script src="http://localhost:35730/livereload.js"></script>
+</body>
+</html>

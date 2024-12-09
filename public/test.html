@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask API Tester</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        button {
+            margin: 5px 0;
+        }
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+        .container {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Flask API Tester</h1>
+
+    <div class="container">
+        <h2>1. Cargar datos</h2>
+        <button onclick="cargarDatos()">Cargar Datos</button>
+        <pre id="cargar-datos-output"></pre>
+    </div>
+
+    <div class="container">
+        <h2>2. Crear jugador</h2>
+        <button onclick="crearJugador()">Crear Jugador</button>
+        <pre id="crear-jugador-output"></pre>
+    </div>
+
+    <div class="container">
+        <h2>3. Lanzar dados</h2>
+        <button onclick="lanzarDados()">Lanzar Dados</button>
+        <pre id="lanzar-dados-output"></pre>
+    </div>
+
+    <div class="container">
+        <h2>4. Ver eficiencias</h2>
+        <button onclick="verEficiencias()">Ver Eficiencias</button>
+        <pre id="ver-eficiencias-output"></pre>
+    </div>
+
+    <div class="container">
+        <h2>5. Ver productos</h2>
+        <button onclick="verProductos()">Ver Productos</button>
+        <pre id="ver-productos-output"></pre>
+    </div>
+
+    <div class="container">
+        <h2>6. Eventos disponibles</h2>
+        <button onclick="obtenerEventos()">Obtener Eventos</button>
+        <pre id="obtener-eventos-output"></pre>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000'; // Cambiar si el servidor tiene otro puerto
+
+        async function cargarDatos() {
+            try {
+                const response = await fetch(`${API_URL}/cargar-datos`);
+                const data = await response.json();
+                document.getElementById('cargar-datos-output').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('cargar-datos-output').textContent = 'Error: ' + error;
+            }
+        }
+
+        async function crearJugador() {
+            try {
+                const response = await fetch(`${API_URL}/crear_jugador`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ initial_budget: 1000 })
+                });
+                const data = await response.json();
+                document.getElementById('crear-jugador-output').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('crear-jugador-output').textContent = 'Error: ' + error;
+            }
+        }
+
+        async function lanzarDados() {
+            try {
+                const response = await fetch(`${API_URL}/lanzar_dados`, {
+                    method: 'POST',
+                });
+                const data = await response.json();
+                document.getElementById('lanzar-dados-output').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('lanzar-dados-output').textContent = 'Error: ' + error;
+            }
+        }
+
+        async function verEficiencias() {
+    try {
+        const response = await fetch(`${API_URL}/ver_efficiencias`);
+        if (!response.ok) {
+            throw new Error(`Error del servidor: ${response.status} ${response.statusText}`);
+        }
+        const data = await response.json();
+        document.getElementById('ver-eficiencias-output').textContent = JSON.stringify(data, null, 2);
+    } catch (error) {
+        document.getElementById('ver-eficiencias-output').textContent = 'Error: ' + error.message;
+    }
+}
+
+        async function verProductos() {
+            try {
+                const response = await fetch(`${API_URL}/productos`);
+                const data = await response.json();
+                document.getElementById('ver-productos-output').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('ver-productos-output').textContent = 'Error: ' + error;
+            }
+        }
+
+        async function obtenerEventos() {
+            try {
+                const response = await fetch(`${API_URL}/eventos`);
+                const data = await response.json();
+                document.getElementById('obtener-eventos-output').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('obtener-eventos-output').textContent = 'Error: ' + error;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,421 @@
+/* Estilos generales */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Contenedor principal */
+  #main-container {
+    position: fixed; /* Fijo para que se superponga en toda la página */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    display: none; /* Empieza oculto */
+    background-color: #eef3ff;
+    z-index: 1000;
+  }
+  
+  .left-div {
+    width: 330px;
+  }
+  
+  /* Estilos del panel izquierdo con las categorías */
+  .categories {
+    width: 262px;
+    border-radius: 8px;
+    position: absolute;
+    margin-top: 100px;
+  }
+  
+  .categories button {
+    width: 237.94px; 
+    height: 124px;
+    background-size: cover;
+    border: none;
+    cursor: pointer;
+    position: relative; /* Necesario para posicionar el overlay */
+    transition: all 0.3s ease; /* Transición suave */
+    border-bottom-right-radius: 16px;
+    border-top-right-radius: 16px;
+    margin: 21px 0px ;
+  }
+  
+  /* Estilo para el botón con una imagen por defecto */
+  .categories button:nth-child(1) {
+    background-image: url('/images/categorias/productos.png'); 
+  }
+  
+  .categories button:nth-child(2) {
+    background-image: url('/images/categorias/proyectos.png'); 
+  }
+  
+  .categories button:nth-child(3) {
+    background-image: url('/images/categorias/recursos.png'); /
+  }
+  
+  
+  
+  
+  
+  /* Pseudo-elemento para overlay */
+  .categories button::before {
+    content: ''; /* Necesario para crear un pseudo-elemento */
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(137, 147, 223, 0.4);
+    /* Color de overlay con transparencia */
+    opacity: 0; /* Inicialmente invisible */
+    transition: opacity 0.3s ease; /* Transición suave */
+    z-index: 1; /* Asegurarse de que esté encima de la imagen */
+    border-bottom-right-radius: 16px;
+    border-top-right-radius: 16px;
+  }
+    
+  .categories button:hover {
+    transform: scale(1.05); /* Efecto de agrandado */
+    margin-left: 5px;
+  }
+  
+  /* Mostrar el overlay en hover */
+  .categories button:hover::before {
+    opacity: 1; /* Muestra el overlay cuando se pasa el ratón */
+  }
+    
+  /* Estilo cuando el botón es seleccionado (activo) */
+  .categories button.active {
+      transform: scale(1.10);
+      margin-left: 12px;
+      
+  }
+  /* Cambiar la imagen cuando el botón está seleccionado (activo) */
+  .categories button.active:nth-child(1) {
+    background-image: url('/images/categorias/productos-sel.png'); 
+  }
+  
+  .categories button.active:nth-child(2) {
+    background-image: url('/images/categorias/proyectos-sel.png'); 
+  }
+  
+  .categories button.active:nth-child(3) {
+    background-image: url('/images/categorias/recursos-sel.png'); 
+  }
+  
+  
+  
+  
+  /* Estilos del panel central con los productos, proyectos, recursos */
+  .items {
+    background-color: rgb(219, 222, 242); /* Fondo blanco dentro del contenedor */
+    border-radius: 5px;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    height: 708px;
+    overflow-y: auto; /* Scroll si hay demasiados ítems */
+  
+  }
+  /* Personalización del scrollbar */
+.items::-webkit-scrollbar {
+    width: 21px;
+    height: 166.59px; 
+}
+
+.items::-webkit-scrollbar-thumb {
+    background-color: #C1C7E0;
+    
+ /* Color del "thumb" del scrollbar */
+    border-radius: 50px; /* Esquinas redondeadas en el "thumb" */
+}
+
+.items::-webkit-scrollbar-thumb:hover {
+    background-color: #9fa7e0;
+    /* Color al pasar el mouse sobre el scrollbar */
+}
+
+.items::-webkit-scrollbar-track {
+    background-color: #DBDEF2;
+    /* Fondo del track (el área por donde se mueve el thumb) */
+    border-radius: 10px;
+}
+
+
+
+
+  .item {
+    background-color: #B9C9FC;
+    padding: 13px 9.7px;
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, background-color 0.3s;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 121px;
+    height: 190px; /* Tamaño fijo */
+    color: #7D88DB;
+  }
+  
+  .item:hover {
+    transform: scale(0.97);
+  }
+  
+  .item img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 5px;
+  }
+  
+  .item-name {
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: center;
+    font-size: 11px;
+    font-family: "Quicksand";
+  }
+  
+
+  #item-name {
+    background-color: #7D88DB;
+    width: 264px;
+    height: 52px;
+    border-radius: 15px;
+    align-content: center;
+    margin: auto;
+    color: #E4E7FF;
+    font-size: 14px;
+  }
+
+  #item-cost {
+    background-color: #FFEFCA;
+    width: 236.48px;
+    height: 48.66px;
+    align-content: center;
+    color: #F4B100;
+    border-radius: 30px;
+    font-size: 24px;
+    margin: auto;
+  }
+
+ 
+
+
+  .item-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 30px;
+  }
+  
+  .item-price {
+    margin-top: 10px;
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+    background-color: #7D88DB;
+    width: 120px;
+    height: 30px;
+    text-align: center;
+    align-content: center;
+    border-radius: 10px;
+  }
+  
+  .item-acquired {
+    background-color: #5661B4 !important; /* Resaltar en verde */
+    color: white;
+  }
+  
+  .item-price.acquired {
+    background-color: #5661B4
+  }
+  
+  /* Estilo para mostrar detalles del item seleccionado */
+  .selected-item {
+    width: 425px; /* Ancho fijo */
+    height: 750px; /* Alto fijo */
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column; /* Ordenar elementos verticalmente */
+    justify-content: space-between; /* Espaciar elementos uniformemente */
+    overflow: hidden; /* Evitar que el contenido desborde */
+    box-sizing: border-box; /* Asegurar que padding no afecte dimensiones */
+    margin-top: 186px;
+    
+  }
+  
+  .selected-item h3 {
+    margin-bottom: 10px;
+    font-size: 18px;
+    text-align: center;
+    flex-shrink: 0; /* Evitar que el título cambie de tamaño */
+  }
+  
+  .selected-item p {
+    text-align: center;
+    flex-shrink: 0; /* Evitar que cambie de tamaño */
+    font-family: "Quicksand";
+  }
+  
+  /* Botón para abrir el modal */
+  #openModalBtn {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  #openModalBtn:hover {
+    background-color: #45a049;
+  }
+  
+  /* Estilo para el botón de cerrar el modal */
+  #closeModalBtn {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    align-self: flex-start;
+    margin-top: 69px;
+    margin-left: 89px;
+  }
+  
+  /* Botón de compra */
+  .buy-button {
+    width: 384px ;
+    height: 86.45px;
+    margin-bottom: 33px;
+    background-image: url("/images/comprar1.png") ;
+    color: white;
+    font-size: 32px;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+       /* Segunda sombra intermedia con el color ABB6F4 */
+    transition: all 0.2s ease;
+    font-family: "Quicksand", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: normal;
+    margin-top: 100px;
+}
+
+.buy-button:active {
+    background-image: url("/images/comprar2.png");     /* Reduce la sombra intermedia cuando se presiona */
+    transform: translateY(4px); /* Desplaza el botón hacia abajo */
+}
+  
+  /* Estilo para la imagen de requisitos */
+  
+  #item-requirements {
+    height: 75px; /* Altura fija para los requisitos */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px; /* Espaciado entre imágenes */
+    overflow: hidden; /* Evitar desbordamiento */
+    flex-shrink: 0;
+  }
+
+  .requirements img {
+    width: 70px;
+    height: auto;
+    object-fit: cover;
+    border-radius: 20px;
+    border: #E4E7FF solid;
+    border-width: 5px;
+  }
+  
+  
+  #buyButton {
+    margin-top: 10px;
+    flex-shrink: 0; /* Evitar que se mueva */
+  }
+  /* Mostrar el presupuesto disponible */
+  .budget {
+    position: absolute;
+    background-color: #7D88DB;
+    color: white;
+    align-content: center;
+    font-size: 26px;
+    width: 210px;
+    height: 70px;
+    margin-top: -133px;
+    margin-left: 182px;
+    border-radius: 35px;
+  }
+
+
+  .items-wrapper {
+    background-color: rgb(219, 222, 242); /* Fondo azul */
+    padding: 44px 83px 57px 63px; /* Espaciado interno */
+    border-radius: 20px; /* Bordes redondeados */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para realce */
+    overflow: hidden; /* Evitar que los ítems se desborden */
+  
+    height: 828px;
+    width: 958px;
+    margin-top: 149px;
+    margin-right: 68px;
+  }
+
+
+
+
+
+   /* El modal (por defecto está oculto) */
+   .modal {
+    display: none; /* Escondido por defecto */
+    position: fixed;
+    z-index: 1; /* Asegura que el modal esté encima del contenido */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0); /* Color de fondo del modal */
+    background-color: rgba(0,0,0,0.4); /* Fondo con transparencia */
+}
+
+/* El contenido del modal */
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+}
+
+/* El botón de cerrar */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}

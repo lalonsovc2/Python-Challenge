@@ -1,0 +1,154 @@
+html, body {
+    height: 100%; /* Asegúrate de que el documento ocupe toda la altura */
+    margin: 0;
+    background-color: #EEF3FF; /* Fondo general */
+}
+  
+.wrapper {
+    min-height: 100%; /* Hace que el contenido principal llene al menos la pantalla */
+    display: flex;
+    flex-direction: column;
+}
+  
+.content {
+    flex: 1; /* Hace que el contenido principal ocupe todo el espacio disponible */
+}
+  
+.footer-space {
+    width: 100%;
+    height: 153.27px;
+    background-color: #49519E;
+    margin: 0;
+    padding: 0;
+}
+
+.icon-bar-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Espacio entre los iconos con barras */
+    position: absolute;
+    top: 50px; /* Ajusta la distancia desde la parte superior según sea necesario */
+    left: 70px; /* Ajusta la distancia desde el lado izquierdo según sea necesario */
+}
+
+.icon-with-bar {
+    display: flex;
+    align-items: center; /* Centra verticalmente el icono y la barra */
+    position: relative;
+}
+
+#medalla {
+    margin-left: 16px;
+}
+
+.niveles {
+    height: 90px;
+    width: auto;
+    z-index: 1;
+}
+
+
+.bar-text {
+    background-color: #D3D3D3;
+    color: black;
+    font-size: 18px; /* Ajusta el tamaño del texto según sea necesario */
+    padding: 10px; /* Espacio interno para el texto */
+    margin-left: -50px; /* Espacio entre el icono y la barra */
+    border-radius: 5px; /* Redondea las esquinas de la barra */
+    width: 170px; /* Ancho de la barra */
+    text-align: center; /* Centra el texto dentro de la barra */
+    font-family: "Quicksand", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: normal;
+    font-size: 25px;
+    color: #7C7C7C;
+}
+
+
+.escritorio {
+    position: absolute;
+    bottom: 132px; /* A 132px del final de la página */
+    left: 50%; /* Centra la imagen horizontalmente */
+    transform: translateX(-50%); /* Ajusta para centrarla */
+    z-index: 1; /* Asegura que la imagen esté por encima del footer */
+}
+
+.persona {
+    position: absolute;
+    top: 120px;
+    left: 46%;
+    z-index: 2;
+}
+  
+.reloj {
+    position: absolute;
+    bottom: 676px; /* Posiciona 76px por encima de "escritorio" */
+    left: 33%; /* Centra la imagen horizontalmente con respecto a "escritorio" */
+    transform: translateX(-50%); /* Ajusta para centrarla */
+    z-index: 3; /* Asegura que "reloj" esté por encima de "escritorio" y "persona" */
+}
+
+.estante {
+    position: absolute;
+    bottom: 704px;
+    right: 13%;
+}
+
+.buttons-container {
+    position: absolute;
+    left: 122px; /* Ajusta esta distancia desde la izquierda según lo que necesites */
+    bottom: 221px; /* Alinea con "Escritorio", ajusta según sea necesario */
+    display: flex;
+    flex-direction: column; /* Asegura que los botones estén uno debajo del otro */
+    gap: 1px; /* Espacio de 33px entre cada botón */
+}
+
+.icons-container {
+    position: absolute;
+    top: 50px; /* Ajusta la distancia desde la parte superior según sea necesario */
+    right: 80px; /* Ajusta la distancia desde la parte derecha según sea necesario */
+    display: flex;
+    flex-direction: row; /* Coloca las imágenes en una fila */
+    gap: 40px; /* Espacio de 40px entre cada icono */
+}
+
+.icons-container button{
+    background-color: transparent;
+    border: none;
+}
+.icon {
+    width: 76px;
+    height: 76px;
+}
+
+
+.button-3d {
+    width: 384px ;
+    height: 86.45px;
+    margin-bottom: 33px;
+    background-image: url("/images/BOTON.png") ;
+    color: white;
+    font-size: 32px;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+       /* Segunda sombra intermedia con el color ABB6F4 */
+    transition: all 0.2s ease;
+    font-family: "Quicksand", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: normal;
+}
+
+.button-3d:active {
+    background-image: url("/images/BOTON-1.png");     /* Reduce la sombra intermedia cuando se presiona */
+    transform: translateY(4px); /* Desplaza el botón hacia abajo */
+}
+
+
+.jugar-button {
+    position: absolute;
+    right: 93px;
+    bottom: 88px;
+}

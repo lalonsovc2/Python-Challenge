@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personajes</title>
+    <link rel="stylesheet" href="/styles/personajes.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand&display=swap" rel="stylesheet">
+</head>
+<body>
+    <a class="icono-regresar" href="/dashboard.html"><img src="/images/regresar.png" alt="flecha"></a>
+    <h1>Personajes</h1>
+    <div class="contenedor-personajes">
+        <div id="characterList"></div>
+    </div>
+    <div id="characterInfo">
+        <img id="selectedCharacterImage"  src=""/>
+        <div id="selectedCharacterName"></div>
+    </div>  
+    
+    <div class="guardar-button">
+        <button id="saveCharacter" class="button-3d">Guardar</button>
+    </div>
+    
+
+    <script>
+document.addEventListener('DOMContentLoaded', () => {
+    const user = JSON.parse(localStorage.getItem('user')); // Obtener el usuario actual
+    if (!user) {
+        window.location.href = '/login.html'; // Si no hay usuario logueado, redirigir al login
+    }
+
+    const characters = [
+        { id: 1, name: "Maria", image: "/images/personaje1.png", imageb: "/images/personaje1b.png", status: "activo" },
+        { id: 2, name: "David", image: "/images/personaje2.png", imageb: "/images/personaje2b.png", status: "activo" },
+        { id: 5, name: "Personaje 4", image: "/images/bloqueado.png", imageb: "/images/bloqueado.png", status: "bloqueado" },
+        { id: 3, name: "Mateo", image: "/images/personaje3.png", imageb: "/images/personaje3b.png", status: "activo" },
+        { id: 4, name: "Susana", image: "/images/personaje4.png", imageb: "/images/personaje4b.png", status: "activo" },
+        { id: 6, name: "Personaje 6", image: "/images/bloqueado.png", imageb: "/images/bloqueado.png", status: "bloqueado" }
+    ];
+
+    const characterList = document.getElementById('characterList');
+    const selectedCharacterImage = document.getElementById('selectedCharacterImage');
+    const selectedCharacterName = document.getElementById('selectedCharacterName');
+    let previousCharacterId = null; // Para rastrear el personaje previamente seleccionado
+
+    // Mostrar los personajes
+    characters.forEach(character => {
+        const characterItem = document.createElement('div');
+        characterItem.classList.add('character-item');
+        if (character.status === 'bloqueado') {
+            characterItem.classList.add('bloqueado');
+        }
+
+        characterItem.innerHTML = `
+            <img src="${character.image}" alt="${character.name}" class="character-icon">
+            <p>${character.name}</p>
+        `;
+
+        if (character.status === 'activo') {
+            characterItem.addEventListener('click', () => {
+                if (previousCharacterId === character.id) {
+                    return; // Evitar acción si el personaje ya está seleccionado
+                }
+
+                // Determina la dirección del movimiento
+                const direction = previousCharacterId === null || character.id > previousCharacterId
+                    ? 'right'
+                    : 'left';
+
+                // Añadir clases de animación
+                selectedCharacterImage.classList.remove('slide-left', 'slide-right');
+               
+                selectedCharacterImage.classList.add(direction === 'right' ? 'slide-right' : 'slide-left');
+
+                // Cambiar el personaje después de la animación
+                setTimeout(() => {
+                    selectedCharacterImage.src = character.imageb;
+                    selectedCharacterName.textContent = character.name;
+
+                    // Restablecer la posición para la siguiente animación
+                    selectedCharacterImage.classList.remove('slide-left', 'slide-right');
+                }, 600); // Coincide con la duración de la animación
+
+                // Resalta el personaje seleccionado
+                document.querySelectorAll('.character-item').forEach(item => item.classList.remove('selected'));
+                characterItem.classList.add('selected');
+
+                // Guarda el personaje en localStorage
+                localStorage.setItem('selectedCharacter', JSON.stringify(character));
+                previousCharacterId = character.id;
+            });
+        }
+
+        characterList.appendChild(characterItem);
+    });
+
+       // Restaurar selección previa
+    const savedCharacter = JSON.parse(localStorage.getItem('selectedCharacter'));
+    if (savedCharacter) {
+        previousCharacterId = savedCharacter.id;
+        selectedCharacterImage.src = savedCharacter.imageb;
+        selectedCharacterName.textContent = savedCharacter.name;
+
+        const savedItem = [...characterList.children].find(
+            item => parseInt(item.dataset.id) === savedCharacter.id
+        );
+        if (savedItem) savedItem.classList.add('selected');
+    }
+
+
+    // Guardar el personaje elegido y asociarlo al usuario
+    document.getElementById('saveCharacter').addEventListener('click', () => {
+    const character = JSON.parse(localStorage.getItem('selectedCharacter'));
+    if (character) {
+        const user = JSON.parse(localStorage.getItem('user')); // Obtener el usuario actual
+
+        if (user) {
+            // Asignar el ID del personaje al usuario en localStorage
+            user.personaje = character.id;
+            localStorage.setItem('user', JSON.stringify(user)); // Actualiza el localStorage con los datos actualizados
+
+            // Enviar la solicitud POST al servidor para guardar el personaje
+            fetch('http://localhost:3000/save-character', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: user.email, personaje: character.id })
+            })
+            .then(response => response.json()) 
+            .then(data => {
+                // Si la respuesta contiene un error, mostrarlo
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    alert('Personaje guardado correctamente.');
+                    // Redirigir al dashboard
+                    window.location.href = '/dashboard.html';
+                }
+            })
+            .catch(error => {
+                alert('Error al guardar el personaje: ' + error);
+            });
+        } 
+    } 
+});
+
+
+
+
+    // Restaurar selección previa
+    const selectedCharacter = JSON.parse(localStorage.getItem('selectedCharacter'));
+    if (selectedCharacter) {
+        previousCharacterId = selectedCharacter.id; // Establece el ID previo
+        selectedCharacterImage.src = selectedCharacter.imageb;
+        selectedCharacterName.textContent = selectedCharacter.name;
+    }
+});
+
+
+    </script>
+</body>
+</html>
